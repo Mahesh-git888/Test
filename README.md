@@ -252,6 +252,3 @@ API endpoints are rate-limited to prevent abuse. Default limits:
 - Input validation on all endpoints
 - Environment variables for sensitive configuration
 
-## License
-
-UNLICENSED - Internal Amazon project
