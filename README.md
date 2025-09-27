@@ -124,32 +124,27 @@ Process health data directly as JSON and receive personalized recommendations.
 json
 {
   "age": 42,
-  "gender": "male",       //must give atleast 2 of these
   "smoker": false,
   "exercise": "moderate",
   "diet": "mixed",
 }
 
 
-*Example using curl:*
-bash
-curl -X POST \
-  http://localhost:3000/api/ocr/process-text \
+curl -X POST https://awhile-dentiform-nova.ngrok-free.dev/api/ocr/process-text \
   -H "Content-Type: application/json" \
   -d '{
     "age": 42,
-    "gender": "male",
     "smoker": false,
     "exercise": "moderate",
     "diet": "mixed"
   }'
 
 
+
 *Example using JavaScript:*
 javascript
 const healthData = {
   age: 42,
-  gender: "male",
   smoker: false,
   exercise: "moderate",
   diet: "mixed"
@@ -166,51 +161,24 @@ const response = await fetch('/api/ocr/process-text', {
 const result = await response.json();
 
 
-### Response Format
-
-*Success Response:*
-json
 {
   "success": true,
   "data": {
     "healthProfile": {
-      "personalInfo": {
+      "answers": {
         "age": 42,
-        "gender": "male",
-        "height": 175,
-        "weight": 80,
-        "bmi": 26.1
-      },
-      "lifestyle": {
         "smoker": false,
         "exercise": "moderate",
-        "dietType": "mixed"
+        "diet": "mixed"
       },
-      "riskFactors": {
-        "cardiovascular": "moderate",
-        "diabetes": "low",
-        "overall": "moderate"
-      },
-      "riskLevel": "moderate"
+      "riskFactors": ["smoking", "low exercise"],
+      "riskLevel": "medium"
     },
-    "recommendations": {
-      "dietary": [
-        "Increase fiber intake with whole grains and vegetables",
-        "Limit processed foods and added sugars"
-      ],
-      "exercise": [
-        "Aim for 150 minutes of moderate aerobic activity per week",
-        "Include strength training exercises twice per week"
-      ],
-      "lifestyle": [
-        "Maintain regular sleep schedule (7-9 hours)",
-        "Practice stress management techniques"
-      ],
-      "gemini_recommendations": [
-        "Consider consulting with a nutritionist for personalized meal planning",
-        "Regular health check-ups are recommended given your risk profile"
-      ]
-    }
+    "recommendations": [
+      "Walk 30 minutes daily",
+      "Reduce sugar intake",
+      "Quit smoking"
+    ]
   }
 }
 
@@ -223,33 +191,25 @@ json
 }
 
 
-*Incomplete OCR Response:*
-json
 {
   "success": false,
   "status": "incomplete_profile",
   "message": "Could not extract complete health profile from image",
   "extractedData": {
-    "age": 42,
-    "gender": "male"
+    "age": 42
   },
-  "missingFields": ["height", "weight", "exercise"]
+  "missingFields": ["smoker", "exercise", "diet"]
 }
 
 
 ## Health Data Fields
+| Field    | Type    | Required | Description                                    |
+| -------- | ------- | -------- | ---------------------------------------------- |
+| age      | number  | Yes      | Age in years                                   |
+| smoker   | boolean | Yes      | Smoking status                                 |
+| exercise | string  | Yes      | "rarely", "light", "moderate", "intense"       |
+| diet     | string  | Yes      | "high sugar", "low sugar", "balanced", "mixed" |
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| age | number | Yes | Age in years |
-| gender | string | Yes | "male", "female", or "other" |
-| height | number | Yes | Height in centimeters |
-| weight | number | Yes | Weight in kilograms |
-| smoker | boolean | No | Smoking status |
-| exercise | string | No | "sedentary", "light", "moderate", "vigorous" |
-| dietType | string | No | "vegetarian", "vegan", "mixed", "keto", etc. |
-| medicalHistory | array | No | Array of medical conditions |
-| allergies | array | No | Array of known allergies |
 
 ## Development
 
